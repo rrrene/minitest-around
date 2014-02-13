@@ -3,4 +3,4 @@
 set -e
 
 bundle exec rake
-cucumber
+bundle exec cucumber
