@@ -70,47 +70,50 @@ Feature: around hooks
       around each after
       """
 
-#  Scenario: access the example metadata
-#    Given a file named "example_spec.rb" with:
-#      """ruby
-#      describe "something" do
-#        around do |example|
-#          puts example.metadata[:foo]
-#          example.call
-#        end
-#
-#        it "does something", :foo => "this should show up in the output" do
-#        end
-#      end
-#      """
-#    When I run `ruby example_spec.rb`
-#    Then the output should contain "this should show up in the output"
+  @ignore
+  Scenario: access the example metadata
+    Given a file named "example_spec.rb" with:
+      """ruby
+      describe "something" do
+        around do |example|
+          puts example.metadata[:foo]
+          example.call
+        end
 
-#  Scenario: define a global around hook
-#    Given a file named "example_spec.rb" with:
-#      """ruby
-#      RSpec.configure do |c|
-#        c.around do |example|
-#          puts "around each before"
-#          example.call
-#          puts "around each after"
-#        end
-#      end
-#
-#      describe "around filter" do
-#        it "gets run in order" do
-#          puts "in the example"
-#        end
-#      end
-#      """
-#    When I run `ruby example_spec.rb`
-#    Then the output should contain:
-#      """
-#      around each before
-#      in the example
-#      around each after
-#      """
+        it "does something", :foo => "this should show up in the output" do
+        end
+      end
+      """
+    When I run `ruby example_spec.rb`
+    Then the output should contain "this should show up in the output"
 
+  @ignore
+  Scenario: define a global around hook
+    Given a file named "example_spec.rb" with:
+      """ruby
+      RSpec.configure do |c|
+        c.around do |example|
+          puts "around each before"
+          example.call
+          puts "around each after"
+        end
+      end
+
+      describe "around filter" do
+        it "gets run in order" do
+          puts "in the example"
+        end
+      end
+      """
+    When I run `ruby example_spec.rb`
+    Then the output should contain:
+      """
+      around each before
+      in the example
+      around each after
+      """
+
+  @ignore
   Scenario: before/after hooks are wrapped by the around hook
     Given a file named "example_spec.rb" with:
       """ruby
@@ -144,39 +147,41 @@ Feature: around hooks
       around each after
       """
 
-#  Scenario: before/after(:all) hooks are NOT wrapped by the around hook
-#    Given a file named "example_spec.rb" with:
-#      """ruby
-#      describe "around filter" do
-#        around do |example|
-#          puts "around each before"
-#          example.call
-#          puts "around each after"
-#        end
-#
-#        before(:all) do
-#          puts "before all"
-#        end
-#
-#        after(:all) do
-#          puts "after all"
-#        end
-#
-#        it "gets run in order" do
-#          puts "in the example"
-#        end
-#      end
-#      """
-#    When I run `ruby --format progress example_spec.rb`
-#    Then the output should contain:
-#      """
-#      before all
-#      around each before
-#      in the example
-#      around each after
-#      .after all
-#      """
+  @ignore
+  Scenario: before/after(:all) hooks are NOT wrapped by the around hook
+    Given a file named "example_spec.rb" with:
+      """ruby
+      describe "around filter" do
+        around do |example|
+          puts "around each before"
+          example.call
+          puts "around each after"
+        end
 
+        before(:all) do
+          puts "before all"
+        end
+
+        after(:all) do
+          puts "after all"
+        end
+
+        it "gets run in order" do
+          puts "in the example"
+        end
+      end
+      """
+    When I run `ruby --format progress example_spec.rb`
+    Then the output should contain:
+      """
+      before all
+      around each before
+      in the example
+      around each after
+      .after all
+      """
+
+  @ignore
   Scenario: examples run by an around block are run in the configured context
     Given a file named "example_spec.rb" with:
       """ruby
@@ -199,7 +204,7 @@ Feature: around hooks
       end
       """
     When I run `ruby example_spec.rb`
-    Then the output should contain "1 example, 0 failure"
+    Then the output should contain "1 runs, 0 assertions, 0 failures, 0 errors, 0 skips"
 
   Scenario: implicitly pending examples are detected as Not yet implemented
     Given a file named "example_spec.rb" with:
@@ -213,12 +218,10 @@ Feature: around hooks
       end
       """
     When I run `ruby example_spec.rb`
-    Then the output should contain "1 example, 0 failures, 1 pending"
+    Then the output should contain "1 runs, 0 assertions, 0 failures, 0 errors, 1 skips"
     And the output should contain:
       """
-      Pending:
-        implicit pending example should be detected as Not yet implemented
-          # Not yet implemented
+      You have skipped tests
       """
 
 
@@ -231,17 +234,16 @@ Feature: around hooks
         end
 
         it "should be detected as pending" do
-          pending
+          skip
           fail
         end
       end
       """
     When I run `ruby example_spec.rb`
-    Then the output should contain "1 example, 0 failures, 1 pending"
+    Then the output should contain "1 runs, 0 assertions, 0 failures, 0 errors, 1 skips"
     And the output should contain:
       """
-        explicit pending example should be detected as pending
-          # No reason given
+      You have skipped tests
       """
 
   Scenario: multiple around hooks in the same scope
@@ -262,12 +264,12 @@ Feature: around hooks
 
         it "they should all be run" do
           puts "in the example"
-          expect(1).to eq(1)
+          assert true
         end
       end
       """
     When I run `ruby example_spec.rb`
-    Then the output should contain "1 example, 0 failure"
+    Then the output should contain "1 runs, 1 assertions, 0 failures, 0 errors, 0 skips"
     And the output should contain:
       """
       first around hook before
@@ -327,7 +329,7 @@ Feature: around hooks
     end
     """
     When I run `ruby example_spec.rb`
-    Then the output should contain "1 example, 0 failure"
+    Then the output should contain "1 runs, 0 assertions, 0 failures, 0 errors, 0 skips"
     And the output should contain:
     """
     first outermost around hook before

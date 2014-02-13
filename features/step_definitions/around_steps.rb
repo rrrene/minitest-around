@@ -12,3 +12,7 @@ end
 Then(/^the output should contain:$/) do |content|
   assert_include @output, content
 end
+
+Then(/^the output should contain "(.*?)"$/) do |content|
+  assert_include @output, content
+end
