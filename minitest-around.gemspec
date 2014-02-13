@@ -14,4 +14,5 @@ Gem::Specification.new "minitest-around", Minitest::Around::VERSION do |s|
   s.add_development_dependency 'rdoc'
   s.add_development_dependency 'rake'
   s.add_development_dependency 'bump'
+  s.add_development_dependency 'spinach'
 end
