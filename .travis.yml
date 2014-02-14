@@ -1,4 +1,3 @@
-script: ci/run.sh
 language: ruby
 rvm:
   - 1.9.3
