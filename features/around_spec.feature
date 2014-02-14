@@ -70,50 +70,6 @@ Feature: around hooks
       around each after
       """
 
-  @ignore
-  Scenario: access the example metadata
-    Given a file named "example_spec.rb" with:
-      """ruby
-      describe "something" do
-        around do |example|
-          puts example.metadata[:foo]
-          example.call
-        end
-
-        it "does something", :foo => "this should show up in the output" do
-        end
-      end
-      """
-    When I run `ruby example_spec.rb`
-    Then the output should contain "this should show up in the output"
-
-  @ignore
-  Scenario: define a global around hook
-    Given a file named "example_spec.rb" with:
-      """ruby
-      RSpec.configure do |c|
-        c.around do |example|
-          puts "around each before"
-          example.call
-          puts "around each after"
-        end
-      end
-
-      describe "around filter" do
-        it "gets run in order" do
-          puts "in the example"
-        end
-      end
-      """
-    When I run `ruby example_spec.rb`
-    Then the output should contain:
-      """
-      around each before
-      in the example
-      around each after
-      """
-
-  @ignore
   Scenario: before/after hooks are wrapped by the around hook
     Given a file named "example_spec.rb" with:
       """ruby
@@ -146,65 +102,6 @@ Feature: around hooks
       after each
       around each after
       """
-
-  @ignore
-  Scenario: before/after(:all) hooks are NOT wrapped by the around hook
-    Given a file named "example_spec.rb" with:
-      """ruby
-      describe "around filter" do
-        around do |example|
-          puts "around each before"
-          example.call
-          puts "around each after"
-        end
-
-        before(:all) do
-          puts "before all"
-        end
-
-        after(:all) do
-          puts "after all"
-        end
-
-        it "gets run in order" do
-          puts "in the example"
-        end
-      end
-      """
-    When I run `ruby --format progress example_spec.rb`
-    Then the output should contain:
-      """
-      before all
-      around each before
-      in the example
-      around each after
-      .after all
-      """
-
-  @ignore
-  Scenario: examples run by an around block are run in the configured context
-    Given a file named "example_spec.rb" with:
-      """ruby
-      module IncludedInConfigureBlock
-        def included_in_configure_block; true; end
-      end
-
-      RSpec.configure do |c|
-        c.include IncludedInConfigureBlock
-      end
-
-      describe "around filter" do
-        around do |example|
-          example.call
-        end
-
-        it "runs the example in the correct context" do
-          expect(included_in_configure_block).to be_truthy
-        end
-      end
-      """
-    When I run `ruby example_spec.rb`
-    Then the output should contain "1 runs, 0 assertions, 0 failures, 0 errors, 0 skips"
 
   Scenario: implicitly pending examples are detected as Not yet implemented
     Given a file named "example_spec.rb" with:
